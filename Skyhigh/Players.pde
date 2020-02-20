@@ -1,5 +1,5 @@
 void player1() {
-  player1 = new FBox(gridsize-8, gridsize);
+  player1 = new FBox(gridsize*2-8, gridsize*2);
   player1.setPosition(width/6, height-250);
 
   //set physical properties

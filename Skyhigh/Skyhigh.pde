@@ -1,17 +1,18 @@
 import fisica.*;
 
 color black = #000000;
+color white = #FFFFFF;
 color cyan   = #5CF3F7;
 color blue   = #552DFA;
 color pink   = #FC73FB;
 color purple = #C60DFF;
 color green  = #29FFAF;
-color red    = color(224, 80, 61);
+color red    = #FF0000;
 color orange = #FF920D;
 color yellow = #FFFF50;
 
 PImage map;
-PImage levi, francis;
+PImage francis, bg;
 PImage[] flyright;
 PImage[] flyleft;
 PImage[] land;
@@ -23,7 +24,7 @@ int frame = 0;
 
 int x = 0;
 int y = 0;
-int gridsize = 60;
+int gridsize = 30;
 float vx, vy, zoomfactor, angle;
 boolean leftkey, rightkey, akey, dkey, spacekey;
 
@@ -38,11 +39,11 @@ void setup() {
   world = new FWorld(-10000, -10000, 10000, 10000);
   world.setGravity(0, 900);
   map = loadImage("map.png");
-  levi = loadImage("Levi.png");
   francis = loadImage("francis.png");
+  bg = loadImage("bgindustry.jpg");
 
-  flyright = new PImage[3];
-  flyleft = new PImage[3];
+  flyright = new PImage[4];
+  flyleft = new PImage[4];
   land = new PImage[1];
   jump = new PImage[1];
   jumpleft = new PImage[1];
@@ -50,13 +51,14 @@ void setup() {
   flyright[0] = loadImage("francis1.png");
   flyright[1] = loadImage("francis2.png");
   flyright[2] = loadImage("francis3.png");
+  flyright[3] = loadImage("francis4.png");
   
-  flyleft[0] = loadImage("hatsume5.png");
-  flyleft[1] = loadImage("hatsume6.png");
-  flyleft[2] = loadImage("hatsume7.png");
+  flyleft[0] = loadImage("francis7.png");
+  flyleft[1] = loadImage("francis8.png");
+  flyleft[2] = loadImage("francis9.png");
+  flyleft[3] = loadImage("francis10.png");
   
   jump[0] = loadImage("francis6.png");
-  jumpleft[0] = loadImage("hatsume9.png");
 
   land[0] = loadImage("francis5.png");
 
@@ -67,10 +69,21 @@ void setup() {
     color c = map.get(x, y);    
     if (c == black) {
       FBox b = new FBox(gridsize, gridsize);
-      b.setFillColor(black);
+      b.setFillColor(white);
+      b.setStrokeColor(white);
       b.setPosition(x*gridsize, y*gridsize);
       b.setStatic(true);
-      //b.setName("");
+      b.setName("top");
+      boxes.add(b);
+      world.add(b);
+    }
+    if (c == red) {
+      FBox b = new FBox(gridsize, gridsize);
+      b.setFillColor(white);
+      b.setStrokeColor(white);
+      b.setPosition(x*gridsize, y*gridsize);
+      b.setStatic(true);
+      b.setName("bottom");
       boxes.add(b);
       world.add(b);
     }
@@ -87,6 +100,7 @@ void setup() {
 
 void draw() {
   background(255);
+  image(bg, 0, -100, 1500, 1500);
 
   pushMatrix();
   translate(-player1.getX() + width/2, -player1.getY() + height/2);
@@ -114,11 +128,18 @@ void draw() {
 
   //jumping
   ArrayList<FContact> contacts = player1.getContacts();
-  //if (contacts.size() > 0) {
-  //  player1.setVelocity(player1.getVelocityX(), -800);
-  //  currentAction = land;
-  //  costumeNum = 0;
-  //}
+  if (contacts.size() > 0) {
+    for(FContact pc: contacts) {
+      if(pc.contains("top")) {
+        player1.setVelocity(player1.getVelocityX(), -800);
+        for(int i = 0; i < boxes.size(); i++) {
+         FBox b = boxes.get(i);
+         
+        }
+      }
+    }
+    
+  }
   if(contacts.size() == 0 && !leftkey && !rightkey) {
     currentAction = jump;
     costumeNum = 0;
@@ -135,7 +156,6 @@ void draw() {
     currentAction = land;
     costumeNum = 0;
   }
-  //if(contacts.contains(""))
   
   player1.attachImage(currentAction[costumeNum]);
    if(frameCount % 10 == 0) {
