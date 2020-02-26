@@ -1,4 +1,4 @@
-import fisica.*;
+ import fisica.*;
 
 color black = #000000;
 color white = #FFFFFF;
@@ -13,14 +13,16 @@ color yellow = #FFFF50;
 color grey = #646464;
 
 PImage map;
-PImage francis, bg;
+PImage francis, bg, tile;
 PImage[] flyright;
 PImage[] flyleft;
 PImage[] land;
 PImage[] jump;
 PImage[] jumpleft;
 PImage[] currentAction;
+PImage[] coin;
 int costumeNum = 0;
+int coinNum = 0;
 int frame = 0;
 
 int x = 0;
@@ -43,12 +45,14 @@ void setup() {
   map = loadImage("map.png");
   francis = loadImage("francis.png");
   bg = loadImage("bgindustry.jpg");
+  tile = loadImage("tile.jpg");
 
   flyright = new PImage[4];
   flyleft = new PImage[4];
   land = new PImage[1];
   jump = new PImage[1];
   jumpleft = new PImage[1];
+  coin = new PImage[6];
 
   flyright[0] = loadImage("francis1.png");
   flyright[1] = loadImage("francis2.png");
@@ -63,6 +67,13 @@ void setup() {
   jump[0] = loadImage("francis6.png");
 
   land[0] = loadImage("francis5.png");
+  
+  coin[0] = loadImage("coin1.png");
+  coin[1] = loadImage("coin2.png");
+  coin[2] = loadImage("coin3.png");
+  coin[3] = loadImage("coin4.png");
+  coin[4] = loadImage("coin5.png");
+  coin[5] = loadImage("coin6.png");
 
   currentAction = land;
 
@@ -71,8 +82,7 @@ void setup() {
     color c = map.get(x, y);    
     if (c == black) {
       FBox b = new FBox(gridsize, gridsize);
-      b.setFillColor(#A4C1BE);
-      b.setStrokeColor(#A4C1BE);
+      b.attachImage(tile);
       b.setPosition(x*gridsize, y*gridsize);
       b.setStatic(true);
       b.setName("top");
@@ -81,8 +91,7 @@ void setup() {
     }
     if (c == grey) {
       FBox b = new FBox(gridsize, gridsize);
-      b.setFillColor(#A4C1BE);
-      b.setStrokeColor(#A4C1BE);
+      b.attachImage(tile);
       b.setPosition(x*gridsize, y*gridsize);
       b.setStatic(true);
       b.setName("start");
@@ -91,8 +100,7 @@ void setup() {
     }
     if (c == red) {
       FBox b = new FBox(gridsize, gridsize);
-      b.setFillColor(#A4C1BE);
-      b.setStrokeColor(#A4C1BE);
+      b.attachImage(tile);
       b.setPosition(x*gridsize, y*gridsize);
       b.setStatic(true);
       b.setName("bottom");
@@ -114,7 +122,7 @@ void draw() {
   background(255);
 
   image(bg, 0, bgy, 1500, 1500);
-  bgy = -player1.getY()*.03 - 460;
+  bgy = -player1.getY()*.03 - 390;
 
   pushMatrix();
   translate(-player1.getX() + width/2, -player1.getY() + height/2);
@@ -152,9 +160,6 @@ void draw() {
         for (int i = 0; i < boxes.size(); i++) {
           FBox b = boxes.get(i);
           if (dist(player1.getX(), player1.getY(), b.getX(), b.getY()) < 250 && !pc.contains("start")) {
-            //float vx = (b.getX() - player1.getX())*3;
-            //float vy = (b.getY() - player1.getY())*3;
-            //b.setVelocity(vx, vy);
             b.setStatic(false);
           }
         }
