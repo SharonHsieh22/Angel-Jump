@@ -1,6 +1,6 @@
 void player1() {
   player1 = new FBox(gridsize*2-8, gridsize*2);
-  player1.setPosition(width/6, 4500);
+  player1.setPosition(width/6, 6800);
 
   //set physical properties
   player1.setStatic(false);

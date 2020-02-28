@@ -1,4 +1,4 @@
- import fisica.*;
+import fisica.*;
 
 color black = #000000;
 color white = #FFFFFF;
@@ -9,7 +9,7 @@ color purple = #C60DFF;
 color green  = #29FFAF;
 color red    = #FF0000;
 color orange = #FF920D;
-color yellow = #FFFF50;
+color yellow = #FFFF00;
 color grey = #646464;
 
 PImage map;
@@ -21,9 +21,11 @@ PImage[] jump;
 PImage[] jumpleft;
 PImage[] currentAction;
 PImage[] coin;
+PFont font;
 int costumeNum = 0;
 int coinNum = 0;
 int frame = 0;
+int points = 0;
 
 int x = 0;
 int y = 0;
@@ -33,6 +35,7 @@ float bgy;
 boolean leftkey, rightkey, akey, dkey, spacekey;
 
 ArrayList<FBox> boxes = new ArrayList<FBox>();
+ArrayList<GameObject> gameObjects;
 
 FBox player1, player2;
 FWorld world;
@@ -46,6 +49,8 @@ void setup() {
   francis = loadImage("francis.png");
   bg = loadImage("bgindustry.jpg");
   tile = loadImage("tile.jpg");
+  font = createFont("Minecraft.ttf", 20);
+  gameObjects = new ArrayList<GameObject>();
 
   flyright = new PImage[4];
   flyleft = new PImage[4];
@@ -107,6 +112,10 @@ void setup() {
       boxes.add(b);
       world.add(b);
     }
+    
+    if (c == yellow) {
+      gameObjects.add(new coin(x*gridsize, y*gridsize));
+    }
 
     x++;
     if (x == map.width) {
@@ -128,7 +137,21 @@ void draw() {
   translate(-player1.getX() + width/2, -player1.getY() + height/2);
   world.step();
   world.draw();
+  
   popMatrix();
+  textFont(font);
+  text("Points: " + points, width/2 - 40 , height/2 - 50);
+  
+  int j = 0;
+  while (j < gameObjects.size()) {
+    GameObject myObj = gameObjects.get(j);
+    myObj.exist();
+    if (myObj.lives == 0) {
+      gameObjects.remove(j);
+    } else {
+      j++;
+    }
+  }
 
   //left, right movement
   vx = 0;
@@ -159,7 +182,7 @@ void draw() {
         player1.setVelocity(player1.getVelocityX(), -800);
         for (int i = 0; i < boxes.size(); i++) {
           FBox b = boxes.get(i);
-          if (dist(player1.getX(), player1.getY(), b.getX(), b.getY()) < 250 && !pc.contains("start")) {
+          if (dist(player1.getX(), player1.getY(), b.getX(), b.getY()) < 240 && !pc.contains("start")) {
             b.setStatic(false);
           }
         }
@@ -188,6 +211,9 @@ void draw() {
     costumeNum++;
     if (costumeNum == currentAction.length) costumeNum = 0;
   }
+  
+  
+
 }
 
 void keyPressed() {
